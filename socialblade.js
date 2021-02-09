@@ -1,5 +1,5 @@
 const { socialblade } = require('socialblade-com-api')
-const { format } = require('date-fns')
+const { format, subDays } = require('date-fns')
 
 const participants = [
     {
@@ -103,27 +103,42 @@ const participants = [
         twitter: 'viihtube',
     },
 ]
- 
+
+const baseUrl = 'http://api.scraperapi.com?api_key=f941895b4d245ae8491266fe2f58bfef&url='
+
 async function main () {
-    let baseUrl = 'http://api.scraperapi.com?api_key=f941895b4d245ae8491266fe2f58bfef&url='
-    let today = format(new Date(), 'yyyy/MM/dd')
-    
-    // let response = await socialblade(baseUrl, 'instagram', participants[0]['instagram'])
-    
-    // let todaysData = response.table.find(td => td.date == today)
-
-    // console.log(todaysData)
-
-    console.log(participants.map(p => {
-        return {
-            participant: p.participant,
-            instagramHandle: p.instagram,
-            twitterHandle: p.twitter
-        }
-    }))
-
-    // console.log(response.table)
-    // console.log(today)
+    // const response = await socialblade(baseUrl, 'twitter', 'bilaraujjo') //nao funciona
+    const response = await socialblade(baseUrl, 'twitter', 'barackobama') //funciona
+    console.log(response)
 }
 
 main()
+
+// function delay(t) {
+//     return new Promise(resolve => setTimeout(resolve, t));
+// }
+
+// async function run() {
+//     let yesterday = format(subDays(new Date(), 1), 'yyyy/MM/dd')
+
+//     for (let item of participants) {
+//         let response = await socialblade(baseUrl, 'instagram', item.instagram)
+//         let yesterdaysData = response.table.find(td => td.date == yesterday)
+//         let yesterdaysFollowersDelta = yesterdaysData?.followersDelta ?? 0
+        
+//         console.log({
+//             participant: item.participant, 
+//             media: 'instagram',
+//             yesterdaysFollowersDelta
+//         })
+
+//         await delay(5000);
+//     }
+    
+// }
+
+// run().then(() => {
+//    console.log("all done");
+// }).catch(err => {
+//    console.log(err);
+// });
