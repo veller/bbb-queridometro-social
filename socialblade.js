@@ -121,22 +121,28 @@ function delay(t) {
 }
 
 async function instagramFollowers() {
-    let yesterday = format(subDays(new Date(), 1), 'yyyy/MM/dd')
-
+    let participantsAndFollowers = []
+    
     for (let item of participants) {
+        console.log(`getting data for ${item.participant}`)
+
         let response = await socialblade(baseUrl, 'instagram', item.instagram)
+        let yesterday = format(subDays(new Date(), 1), 'yyyy/MM/dd')
         let yesterdaysData = response.table.find(td => td.date == yesterday)
         let yesterdaysFollowersDelta = yesterdaysData?.followersDelta ?? 0
-        
-        console.log({
+
+        participantsAndFollowers.push({
             participant: item.participant, 
             media: 'instagram',
             yesterdaysFollowersDelta
         })
 
-        await delay(5000);
+        await delay(1000);
     }
     
+    sortedParticipantsAndFollowers = participantsAndFollowers.sort((a, b) => (a.yesterdaysFollowersDelta > b.yesterdaysFollowersDelta) ? 1 : -1)
+    
+    console.log(sortedParticipantsAndFollowers)
 }
 
 instagramFollowers().then(() => {
