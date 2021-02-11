@@ -1,3 +1,4 @@
+require('dotenv').config();
 const { socialblade } = require('socialblade-com-api')
 const { format, subDays } = require('date-fns')
 
@@ -104,41 +105,42 @@ const participants = [
     },
 ]
 
-const baseUrl = 'http://api.scraperapi.com?api_key=f941895b4d245ae8491266fe2f58bfef&url='
+const api_key = process.env.API_KEY
+const baseUrl = `http://api.scraperapi.com?api_key=${api_key}&url=`
 
-async function main () {
-    // const response = await socialblade(baseUrl, 'twitter', 'bilaraujjo') //nao funciona
-    const response = await socialblade(baseUrl, 'twitter', 'barackobama') //funciona
-    console.log(response)
+// async function main () {
+//     const response = await socialblade(baseUrl, 'twitter', 'bilaraujjo') //nao funciona
+//     // const response = await socialblade(baseUrl, 'twitter', 'barackobama') //funciona
+//     console.log(response)
+// }
+
+// main()
+
+function delay(t) {
+    return new Promise(resolve => setTimeout(resolve, t));
 }
 
-main()
+async function instagramFollowers() {
+    let yesterday = format(subDays(new Date(), 1), 'yyyy/MM/dd')
 
-// function delay(t) {
-//     return new Promise(resolve => setTimeout(resolve, t));
-// }
-
-// async function run() {
-//     let yesterday = format(subDays(new Date(), 1), 'yyyy/MM/dd')
-
-//     for (let item of participants) {
-//         let response = await socialblade(baseUrl, 'instagram', item.instagram)
-//         let yesterdaysData = response.table.find(td => td.date == yesterday)
-//         let yesterdaysFollowersDelta = yesterdaysData?.followersDelta ?? 0
+    for (let item of participants) {
+        let response = await socialblade(baseUrl, 'instagram', item.instagram)
+        let yesterdaysData = response.table.find(td => td.date == yesterday)
+        let yesterdaysFollowersDelta = yesterdaysData?.followersDelta ?? 0
         
-//         console.log({
-//             participant: item.participant, 
-//             media: 'instagram',
-//             yesterdaysFollowersDelta
-//         })
+        console.log({
+            participant: item.participant, 
+            media: 'instagram',
+            yesterdaysFollowersDelta
+        })
 
-//         await delay(5000);
-//     }
+        await delay(5000);
+    }
     
-// }
+}
 
-// run().then(() => {
-//    console.log("all done");
-// }).catch(err => {
-//    console.log(err);
-// });
+instagramFollowers().then(() => {
+   console.log("all done");
+}).catch(err => {
+   console.log(err);
+});
